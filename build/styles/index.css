@@ -1,0 +1,11 @@
+#task-list {
+  padding-left: 0px;
+}
+
+li.task {
+  list-style-type: none;
+  border-style: solid;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px;
+}
