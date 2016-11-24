@@ -18,6 +18,12 @@ var TaskListView = Backbone.View.extend({
     // Keep track of the <ul> element
     this.listElement = this.$('.task-list');
 
+    // Keep track of our form input fields
+    this.input = {
+      title: this.$('.new-task input[name="title"]'),
+      description: this.$('.new-task input[name="description"]')
+    };
+
     // Create a TaskView for each task
     this.taskViews = [];
     this.taskData.forEach(function(task) {
@@ -42,6 +48,59 @@ var TaskListView = Backbone.View.extend({
       // Add that HTML to our task list
       this.listElement.append(taskView.$el);
     }, this);
+  },
+
+  events: {
+    // Submit events are triggered by forms when the
+    // submit button is clicked or the enter key pressed
+    'submit .new-task': 'addTask'
+  },
+
+  // Event handler for adding a new task
+  // Note: backbone event handlers are bound to the view,
+  // so unlike what we did last week `this` refers to the
+  // view, not the element that triggered the event.
+  // To get the triggering element, use `event.target`
+  addTask: function(event) {
+    // Normally a form submission will refresh the page.
+    // Suppress that behavior.
+    event.preventDefault();
+
+    // Consume the form data
+    var task = this.getInput();
+
+    // Add the new task to our raw data
+    this.taskData.push(task);
+
+    // Build a view for our new task
+    var taskView = new TaskView({
+      task: task,
+      template: this.taskTemplate
+    });
+    this.taskViews.push(taskView);
+
+    // Since the list has changed, we'll need to re-render
+    this.render();
+
+    // With the new task safely added to the list, we can
+    // clear out the input form, to make it easy to add
+    // even more tasks
+    this.clearInput();
+  },
+
+  // Build a task from the data entered in the .new-task form
+  getInput: function() {
+    var task = {
+      title: this.input.title.val(),
+      description: this.input.description.val()
+    };
+    return task;
+  },
+
+  // Clear the .new-task form
+  clearInput: function() {
+    this.input.title.val('');
+    this.input.description.val('');
   }
 });
 
