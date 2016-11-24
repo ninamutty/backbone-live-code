@@ -53,7 +53,8 @@ var TaskListView = Backbone.View.extend({
   events: {
     // Submit events are triggered by forms when the
     // submit button is clicked or the enter key pressed
-    'submit .new-task': 'addTask'
+    'submit .new-task': 'addTask',
+    'click .clear-button': 'clearInput'
   },
 
   // Event handler for adding a new task
