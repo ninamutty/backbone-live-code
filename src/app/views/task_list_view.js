@@ -2,12 +2,12 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from 'backbone';
 
+import Task from 'app/models/task'
 import TaskView from 'app/views/task_view';
 
 var TaskListView = Backbone.View.extend({
   initialize: function(options) {
     // Store a reference to the full list of tasks
-    this.taskData = options.taskData;
 
     // Compile a template to be shared between the individual tasks
     this.taskTemplate = _.template($('#task-template').html());
@@ -24,11 +24,15 @@ var TaskListView = Backbone.View.extend({
       description: this.$('.new-task input[name="description"]')
     };
 
-    // Create a TaskView for each task
+    // Create a TaskModel and TaskView for each task
+    this.taskModels = [];
     this.taskViews = [];
-    this.taskData.forEach(function(task) {
+    options.taskData.forEach(function(task) {
+      var taskModel = new Task(task);
+      this.taskModels.push(taskModel);
+
       var taskView = new TaskView({
-        task: task,
+        model: taskModel,
         template: this.taskTemplate
       });
       this.taskViews.push(taskView);
@@ -67,15 +71,12 @@ var TaskListView = Backbone.View.extend({
     // Suppress that behavior.
     event.preventDefault();
 
-    // Consume the form data
-    var task = this.getInput();
+    // Create a new model from the form data
+    var taskModel = new Task(this.getInput());
+    this.taskModels.push(taskModel);
 
-    // Add the new task to our raw data
-    this.taskData.push(task);
-
-    // Build a view for our new task
     var taskView = new TaskView({
-      task: task,
+      model: taskModel,
       template: this.taskTemplate
     });
     this.taskViews.push(taskView);

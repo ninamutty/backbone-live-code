@@ -7,10 +7,6 @@ var TaskView = Backbone.View.extend({
     // Because the template can be reused, it makes sense
     // to share one between all our views.
     this.template = options.template;
-
-    // For now this view is wrapped around a regular old
-    // JavaScript object.
-    this.task = options.task;
   },
 
   // render() should be in charge of changing the
@@ -25,7 +21,7 @@ var TaskView = Backbone.View.extend({
   render: function() {
     // Use the task template to build some HTML, and
     // add it to our DOM object
-    this.$el.html(this.template({task: this.task}));
+    this.$el.html(this.template({task: this.model.attributes}));
 
     // Enable chained calls
     return this;
