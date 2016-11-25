@@ -7,6 +7,12 @@ var TaskView = Backbone.View.extend({
     // Because the template can be reused, it makes sense
     // to share one between all our views.
     this.template = options.template;
+
+    // Listen to our model, and re-render whenever it
+    // changes. Note the `.bind(this)`, which sets up the
+    // callback to be called with the correct context,
+    // i.e. the view.
+    this.model.bind('change', this.render.bind(this));
   },
 
   // render() should be in charge of changing the
@@ -25,6 +31,22 @@ var TaskView = Backbone.View.extend({
 
     // Enable chained calls
     return this;
+  },
+
+  events: {
+    "click .complete-button": "toggleComplete"
+  },
+
+  // This wrapper is a bit of a bummer, but it's a must.
+  // Backbone view events must be handled by a function
+  // in that view.
+  toggleComplete: function() {
+    this.model.toggleComplete();
+
+    // Notice that we don't need to call render. By watching
+    // the model for changes, we get this functionality for
+    // free! Very nice when you've got many ways to mess
+    // with a model.
   }
 });
 
