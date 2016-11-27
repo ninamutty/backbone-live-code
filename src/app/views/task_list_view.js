@@ -2,18 +2,17 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from 'backbone';
 
-import Task from 'app/models/task'
+import Task from 'app/models/task';
+// import TaskList from 'app/models/task_list';
 import TaskView from 'app/views/task_view';
 
 var TaskListView = Backbone.View.extend({
   initialize: function(options) {
-    // Store a reference to the full list of tasks
-
     // Compile a template to be shared between the individual tasks
     this.taskTemplate = _.template($('#task-template').html());
 
-    // Note that we do not need to save el. Because el
-    // is a backbone thing, it copies it for us.
+    // Note that we do not need to save el or model. Because
+    // these are backbone things, it copies them for us.
 
     // Keep track of the <ul> element
     this.listElement = this.$('.task-list');
@@ -24,19 +23,20 @@ var TaskListView = Backbone.View.extend({
       description: this.$('.new-task input[name="description"]')
     };
 
-    // Create a TaskModel and TaskView for each task
-    this.taskModels = [];
+    // Create a TaskView for each task
     this.taskViews = [];
-    options.taskData.forEach(function(task) {
-      var taskModel = new Task(task);
-      this.taskModels.push(taskModel);
-
+    this.model.forEach(function(task) {
       var taskView = new TaskView({
-        model: taskModel,
+        model: task,
         template: this.taskTemplate
       });
       this.taskViews.push(taskView);
     }, this);
+
+    // Whenever the model changes, we should re-render
+    // Since our model is a collection, a change means a task
+    // was added to or removed from the list.
+    this.listenTo(this.model, 'update', this.render);
   },
 
   render: function() {
@@ -72,17 +72,29 @@ var TaskListView = Backbone.View.extend({
     event.preventDefault();
 
     // Create a new model from the form data
-    var taskModel = new Task(this.getInput());
-    this.taskModels.push(taskModel);
+    var task = new Task(this.getInput());
 
+    // Create a view around the task and add it to our list
     var taskView = new TaskView({
-      model: taskModel,
+      model: task,
       template: this.taskTemplate
     });
     this.taskViews.push(taskView);
 
-    // Since the list has changed, we'll need to re-render
-    this.render();
+    // Add the task itself to the collection. This will trigger
+    // the collection's change event, which will call render
+    // for us (remember that we set this up in initialize).
+    this.model.add(task);
+
+    // We could have said something like
+    //   var task = this.model.add(this.getInput());
+    //   var taskView = new TaskView({
+    //     model: task,
+    //     template: this.template
+    //   });
+    // However, the collection's change event triggers as soon
+    // as the model is added, and our render function requires
+    // that we have the view constructed first.
 
     // With the new task safely added to the list, we can
     // clear out the input form, to make it easy to add
