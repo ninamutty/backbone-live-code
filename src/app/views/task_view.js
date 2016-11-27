@@ -29,12 +29,18 @@ var TaskView = Backbone.View.extend({
     // add it to our DOM object
     this.$el.html(this.template({task: this.model.attributes}));
 
+    // Since the HTML elements are destroyed and re-created from
+    // scratch every time the list re-renders, we need to re-bind
+    // event handlers that listen to events on those elements.
+    this.delegateEvents();
+
     // Enable chained calls
     return this;
   },
 
   events: {
-    "click .complete-button": "toggleComplete"
+    "click .complete-button": "toggleComplete",
+    "click .delete-button": "confirmDelete"
   },
 
   // This wrapper is a bit of a bummer, but it's a must.
@@ -47,6 +53,17 @@ var TaskView = Backbone.View.extend({
     // the model for changes, we get this functionality for
     // free! Very nice when you've got many ways to mess
     // with a model.
+  },
+
+  confirmDelete: function() {
+    // Show a popup box asking the user for confirmation
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      // Destroy automatically removes the model from any collection
+      // it's in. This triggers a 'remove' event first, then an
+      // 'update' event. This ordering is important, and we take
+      // advantage of it in the list view.
+      this.model.destroy();
+    }
   }
 });
 

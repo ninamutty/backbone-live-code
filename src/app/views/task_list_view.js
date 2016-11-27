@@ -37,6 +37,12 @@ var TaskListView = Backbone.View.extend({
     // Since our model is a collection, a change means a task
     // was added to or removed from the list.
     this.listenTo(this.model, 'update', this.render);
+
+    // If a model is removed from the collection, we need
+    // to remove the corresponding view from our list of views.
+    // Removing a model from the collection also triggers an
+    // 'update' event, but the 'remove' event will always happen first.
+    this.listenTo(this.model, 'remove', this.removeTask);
   },
 
   render: function() {
@@ -59,6 +65,9 @@ var TaskListView = Backbone.View.extend({
     // submit button is clicked or the enter key pressed
     'submit .new-task': 'addTask',
     'click .clear-button': 'clearInput'
+
+    // Model events do not go here, but are instead bound in
+    // initialize(). Don't ask me why.
   },
 
   // Event handler for adding a new task
@@ -100,6 +109,15 @@ var TaskListView = Backbone.View.extend({
     // clear out the input form, to make it easy to add
     // even more tasks
     this.clearInput();
+  },
+
+  // Both add and remove callbacks take 3 arguments: model,
+  // collection and options. We are only interested in the first.
+  removeTask: function(model) {
+    this.taskViews = this.taskViews.filter(function(taskView) {
+      // Return false (don't keep) if the view's model matches the removed model
+      return taskView.model != model;
+    });
   },
 
   // Build a task from the data entered in the .new-task form
