@@ -17,7 +17,8 @@ var taskData = [
 ];
 
 $(document).ready(function() {
-  var taskList = new TaskList(taskData);
+  var taskList = new TaskList();
+  taskList.fetch();
   var taskListView = new TaskListView({
     el: $('#application'),
     model: taskList
