@@ -51,7 +51,7 @@ var TaskListView = Backbone.View.extend({
 
   events: {
     // format is ====>  "event css-selector": 'functionName'
-    'submit .new-task': 'createTask',
+    'submit .new-task': 'createTask', // Want this to be sumbit and reference the form so we can access the input information 
     'click .clear-button': 'clearInput'
   },
 
