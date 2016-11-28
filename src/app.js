@@ -35,12 +35,8 @@ var TaskView = Backbone.View.extend({
 
   // render is another backbone thing
   render: function() {
-    var html = '<li class="task">';
-    html += '<h2>' + this.task.title + '</h2>';
-    html += '<p>' + this.task.description + '</p>';
-    html += '</li>';
+    var html = this.template({task: this.task})
     this.$el.html(html);
-
 
     // Enable chained calls
     return this;
