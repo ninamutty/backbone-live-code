@@ -23,6 +23,12 @@ var TaskListView = Backbone.View.extend({
       });
       this.cardList.push(card);
     }, this);
+
+    // Keep track of our form input fields
+    this.input = {
+      title: this.$('.new-task input[name="title"]'),
+      description: this.$('.new-task input[name="description"]')
+    };
   },
 
 
@@ -41,6 +47,54 @@ var TaskListView = Backbone.View.extend({
     }, this);
 
     return this; // enable chained calls
+  },
+
+  events: {
+    // format is ====>  "event css-selector": 'functionName'
+    'submit .new-task': 'createTask',
+    'click .clear-button': 'clearInput'
+  },
+
+  clearInput: function(event) {
+    this.input.title.val('');
+    this.input.description.val('');
+  },
+
+  createTask: function(event) {
+    // event.preventDefault();
+    // console.log("createTask called");
+
+    // Normally a form submission will refresh the page.
+    // Suppress that behavior.
+    event.preventDefault();
+
+    // Get the input data from the form and turn it into a task
+    var task = this.getInput();
+
+    // Add the new task to our list of tasks
+    this.taskData.push(task);
+
+    // Create a card for the new task, and add it to our card list
+    var card = new TaskView({
+      task: task,
+      template: this.taskTemplate
+    });
+    this.cardList.push(card);
+
+    // Re-render the whole list, now including the new card
+    this.render();
+
+    // Clear the input form so the user can add another task
+    this.clearInput();
+  },
+
+  // Build a task from the data entered in the .new-task form
+  getInput: function() {
+    var task = {
+      title: this.input.title.val(),
+      description: this.input.description.val()
+    };
+    return task;
   }
 });
 
