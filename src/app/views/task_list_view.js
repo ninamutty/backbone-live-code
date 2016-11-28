@@ -29,7 +29,7 @@ var TaskListView = Backbone.View.extend({
       title: this.$('.new-task input[name="title"]'),
       description: this.$('.new-task input[name="description"]')
     };
-  },
+  }, // end initialize
 
 
   render: function() {
@@ -47,18 +47,18 @@ var TaskListView = Backbone.View.extend({
     }, this);
 
     return this; // enable chained calls
-  },
+  }, // end render
 
   events: {
     // format is ====>  "event css-selector": 'functionName'
-    'submit .new-task': 'createTask', // Want this to be sumbit and reference the form so we can access the input information 
+    'submit .new-task': 'createTask', // Want this to be sumbit and reference the form so we can access the input information
     'click .clear-button': 'clearInput'
-  },
+  }, // end events
 
   clearInput: function(event) {
     this.input.title.val('');
     this.input.description.val('');
-  },
+  }, // end clearInput
 
   createTask: function(event) {
     // event.preventDefault();
@@ -86,7 +86,7 @@ var TaskListView = Backbone.View.extend({
 
     // Clear the input form so the user can add another task
     this.clearInput();
-  },
+  }, // end clearInput
 
   // Build a task from the data entered in the .new-task form
   getInput: function() {
@@ -95,7 +95,7 @@ var TaskListView = Backbone.View.extend({
       description: this.input.description.val()
     };
     return task;
-  }
+  } // end getInput
 });
 
 export default TaskListView;
