@@ -1,12 +1,16 @@
 import $ from 'jquery';    // Letting us use jquery within this document
 import Backbone from 'backbone'; // importing backbone
 import _ from 'underscore'; // underscore library - works a lot like erb
+
+import Task from 'app/models/task';
 import TaskView from 'app/views/task_view';
 
 var TaskListView = Backbone.View.extend({
   initialize: function(options) {
     // Store a the full list of tasks
-    this.taskData = options.taskData;
+    // this.taskData = options.taskData; //// DON'T NEED THIS NO MORE
+
+    this.modelList = [];
 
     // Compile a template to be shared between the individual tasks
     this.taskTemplate = _.template($('#task-template').html());
@@ -16,12 +20,9 @@ var TaskListView = Backbone.View.extend({
 
     // Create a TaskView for each task
     this.cardList = [];
-    this.taskData.forEach(function(task) {
-      var card = new TaskView({
-        task: task,
-        template: this.taskTemplate
-      });
-      this.cardList.push(card);
+
+    options.taskData.forEach(function(task) {
+      this.addTask(task);
     }, this);
 
     // Keep track of our form input fields
@@ -61,9 +62,6 @@ var TaskListView = Backbone.View.extend({
   }, // end clearInput
 
   createTask: function(event) {
-    // event.preventDefault();
-    // console.log("createTask called");
-
     // Normally a form submission will refresh the page.
     // Suppress that behavior.
     event.preventDefault();
@@ -72,14 +70,7 @@ var TaskListView = Backbone.View.extend({
     var task = this.getInput();
 
     // Add the new task to our list of tasks
-    this.taskData.push(task);
-
-    // Create a card for the new task, and add it to our card list
-    var card = new TaskView({
-      task: task,
-      template: this.taskTemplate
-    });
-    this.cardList.push(card);
+    this.addTask(task);
 
     // Re-render the whole list, now including the new card
     this.render();
@@ -95,7 +86,17 @@ var TaskListView = Backbone.View.extend({
       description: this.input.description.val()
     };
     return task;
-  } // end getInput
+  }, // end getInput
+
+  addTask: function(rawTask) {
+    var task = new Task(rawTask);
+    this.modelList.push(task);
+    var card = new TaskView({
+      model: task,
+      template: this.taskTemplate
+    });
+    this.cardList.push(card);
+  }
 });
 
 export default TaskListView;
