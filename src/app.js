@@ -2,12 +2,14 @@ import $ from 'jquery';    // Letting us use jquery within this document
 import Backbone from 'backbone'; // importing backbone
 import _ from 'underscore'; // underscore library - works a lot like erb
 import TaskListView from 'app/views/task_list_view';
+import TaskList from 'app/collections/task_list';
 
 
 var taskData = [
   {
     title: 'Mow the lawn',
-    description: 'Must be finished before BBQ on Sat afternoon'
+    description: 'Must be finished before BBQ on Sat afternoon',
+    complete: true
   }, {
     title: 'Go to the Bank',
     description: 'Need to make a transfer'
@@ -22,9 +24,11 @@ var taskData = [
 
 
 $(document).ready(function() {
+  var taskList = new TaskList(taskData);
+
   var application = new TaskListView({
     el: $('#application'),
-    taskData: taskData
+    model: taskList
   });
   application.render();
 });
