@@ -107,7 +107,16 @@ var TaskListView = Backbone.View.extend({
       model: task,
       template: this.taskTemplate
     });
+    //  listen for the card to be clicked on to edit
+    this.listenTo(card, 'editMe', this.editCard);
     this.cardList.push(card);
+  },
+
+  editCard: function(cardModel) {
+    console.log("Editing a card (editCard)");
+    this.input.title.val(cardModel.get("title"));
+    this.input.description.val(cardModel.get("description"));
+    this.model.remove(cardModel);   
   }
 });
 

@@ -24,7 +24,13 @@ var TaskView = Backbone.View.extend({
 
   events: {
     'click .complete-button': 'completeHandler', //can only call our own methods (in the view)
-    'click .delete-button': 'deleteTask'
+    'click .delete-button': 'deleteTask',
+    'click div': 'editTask'
+  },
+
+  editTask: function() {
+    console.log("Edit task");
+    this.trigger('editMe', this.model);
   },
 
   deleteTask: function() {
