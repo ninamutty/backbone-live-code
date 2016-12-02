@@ -79,7 +79,7 @@ var TaskListView = Backbone.View.extend({
 
     // Clear the input form so the user can add another task
     this.clearInput();
-  }, // end clearInput
+  }, // end createTask
 
   removeTask: function(model) {
     var filteredList = [];

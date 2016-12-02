@@ -7,7 +7,7 @@ var TaskView = Backbone.View.extend({
   initialize: function(options) {
     // this.task = options.task;
     this.template = options.template;
-t  },
+  },
 
 
   // render is another backbone thing
